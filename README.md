@@ -25,7 +25,7 @@ Here the implementations of the noise model and the various codes are placed and
 
 This task designs and evaluates several circuit-based Quantum Machine Learning (QML) models for a binary classification task on the Iris dataset. It provides a direct comparison of different preprocessing strategies (PCA vs. all features) and, most importantly, analyzes the impact of **five distinct variational circuit (ansatz) designs** on model performance.
 
-## 1. Binary Task and Preprocessing
+#### 1. Binary Task and Preprocessing
 
 * **Binary Task:** The models are tasked with classifying **Iris Versicolor vs. Iris Virginica**. This is a "hard," non-linearly separable problem, chosen to test the limits of the models' expressibility.
 * **Preprocessing:** Two distinct methods are created:
@@ -36,16 +36,16 @@ This task designs and evaluates several circuit-based Quantum Machine Learning (
 
 ---
 
-## 2. Circuit Architectures and Design Choices
+#### 2. Circuit Architectures and Design Choices
 
 Two distinct quantum architectures (2-qubit and 4-qubit) were created. The 4-qubit architecture was further tested with five different ansatz layers.
 
-### Proposal A: 2-Qubit Architecture
+##### Proposal A: 2-Qubit Architecture
 
 * **Feature Map:** `ZZFeatureMap(feature_dimension=2, reps=2)`. This is a non-linear map that entangles the two input features.
 * **Ansatz:** `TwoLocal(num_qubits=2, rotation_blocks='ry', entanglement_blocks='cz', entanglement='linear', reps=3)`. A simple variational circuit with 6 parameters.
 
-### Proposal B: 4-Qubit Architectures (Ansatz Comparison)
+##### Proposal B: 4-Qubit Architectures (Ansatz Comparison)
 
 All 4-qubit models share a common `PauliFeatureMap(feature_dimension=4, paulis=['Z'])` to encode the 4 features into a $2^4=16$-dimensional space. The key difference is the choice of ansatz (`reps=2` for all):
 
@@ -62,14 +62,14 @@ All 4-qubit models share a common `PauliFeatureMap(feature_dimension=4, paulis=[
 
 ---
 
-## 3. Expressibility and Complex Decision Boundaries
+#### 3. Expressibility and Complex Decision Boundaries
 
 * **Proposal A (2-Qubit):** **Severely limited.** Its ability to find boundaries is capped by the 2D data from PCA. It is "blind" to any complex patterns it was not fed and **cannot** represent the true decision boundary for this problem.
 * **Proposal B (4-Qubit):** **High.** All 4-qubit models map the 4D data into a 16D space, which allows them to find a simple separator (a hyperplane) that corresponds to a **highly complex, non-linear decision boundary** in the original 4D space. The *choice* of ansatz (`RealAmplitudes` vs. `RZZ Entangler`) then fine-tunes this expressibility, trading it for trainability.
 
 ---
 
-## 4. Performance, Strengths, and Weaknesses
+#### 4. Performance, Strengths, and Weaknesses
 
 * **Proposal A (2-Qubit):**
     * **Performance:** Fails the non-linear task.
@@ -83,7 +83,7 @@ All 4-qubit models share a common `PauliFeatureMap(feature_dimension=4, paulis=[
 
 ---
 
-## 5. Reasoning and Practical Considerations
+#### 5. Reasoning and Practical Considerations
 
 1.  **Expressibility vs. Accuracy:** For the non-linear task, high expressibility (4-qubits, complex ansatz) is required for high accuracy. The 2-qubit PCA model failed this task completely.
 2.  **Expressibility vs. Trainability:** The `qmlcircuit-other-circuits.py` script highlights the crucial **Expressibility vs. Trainability** trade-off. The `RZZ Entangler` model is the most powerful *in theory*, but its complex, high-parameter landscape may be too difficult for the optimizer to train, potentially leading to a worse result than a "good enough" model like `EfficientSU2`.
